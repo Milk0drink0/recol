@@ -1,3 +1,5 @@
+This is a "Vibe Coded" Application.
+
 # Recol — the better clipboard
 
 A visual clipboard for your Mac. Drag in links, files, images and notes, arrange them on an
