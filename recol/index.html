@@ -43,7 +43,7 @@ body.dragging,body.dragging *{cursor:grabbing!important}
   border-radius:8px;padding:4px 12px;font-size:15px;font-weight:500;white-space:nowrap}
 .board-tab:hover{background:var(--hover)}
 .board-tab.active{color:#fff}
-.boards > .pill{background:var(--brand);border-radius:8px;transition:transform .6s cubic-bezier(.4,1.9,.45,.8),width .6s cubic-bezier(.4,1.9,.45,.8),opacity .2s}
+.boards > .pill{background:var(--brand);border-radius:8px;transition:transform .5s cubic-bezier(.28,1.27,.42,1),width .42s cubic-bezier(.3,1.05,.4,1),opacity .2s}
 .board-tab{animation:tabIn .4s cubic-bezier(.34,1.56,.64,1)}
 .boards.settled .board-tab{animation:none}
 .board-tab .lk{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2.4;opacity:.85}
@@ -187,7 +187,10 @@ body.mood .tagchips{display:none}
 .hist-btn:hover{transform:translateY(-2px) rotate(-8deg);color:var(--ink)}
 .hist-btn.on{background:var(--brand);color:#fff}
 .hist-btn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-.web .hist-btn{display:none}
+.web .hist-btn,.hist-btn[hidden]{display:none}
+.hitem{cursor:grab}
+.hist-ghost{position:fixed;z-index:99;pointer-events:none;max-width:220px;background:var(--panel);color:var(--ink);border:2px solid var(--brand);border-radius:12px;padding:6px 10px;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 10px 26px rgba(0,0,0,.28);transform:translate(10px,8px) rotate(-2deg);animation:pop .25s cubic-bezier(.34,1.56,.64,1)}
+.canvas.hist-over{box-shadow:inset 0 0 0 4px var(--brand)}
 body.mood .hist-btn{opacity:.28;box-shadow:none}
 body.mood .hist-btn:hover,body.mood .hist-btn.on{opacity:1}
 .history{position:absolute;left:18px;bottom:70px;width:340px;max-height:calc(100% - 96px);overflow:auto;z-index:41;background:var(--panel);border:3px solid var(--panel-line);
@@ -261,7 +264,8 @@ body.mood .hist-btn:hover,body.mood .hist-btn.on{opacity:1}
 /* a sliding highlight behind the selected option of any segmented control (data-pill) */
 [data-pill]{position:relative}
 [data-pill] > .pill{position:absolute;left:0;top:0;pointer-events:none;z-index:0;opacity:0;
-  transition:transform .55s cubic-bezier(.34,1.56,.64,1),width .55s cubic-bezier(.34,1.56,.64,1),height .3s,opacity .2s}
+  transition:transform .44s cubic-bezier(.28,1.26,.42,1),width .36s cubic-bezier(.3,1.02,.4,1),height .3s,opacity .2s}
+.mode-seg,.seg,.seg3,.home-seg{overflow:hidden}
 [data-pill] > button{position:relative;z-index:1;transition:color .25s}
 .ctx,.picker,.add-menu,.note-bar{animation-duration:.24s!important;animation-timing-function:cubic-bezier(.34,1.56,.64,1)!important}
 .empty:not([hidden]){animation:fade .45s var(--ease)}
@@ -298,6 +302,7 @@ body.mood .hist-btn:hover,body.mood .hist-btn.on{opacity:1}
 .t-file .fold{position:absolute;right:0;top:0;width:34%;height:24%;background:rgba(0,0,0,.12);border-bottom-left-radius:16px}
 .t-file svg.squig{position:absolute;left:10%;top:9%;width:72%;height:62%;pointer-events:none}
 .t-file .label{color:inherit;text-shadow:none}
+.label.named{font-size:16px;left:10px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .t-file .fname{position:absolute;left:12px;right:12px;bottom:34px;font-size:12px;font-weight:500;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 .t-link{background:var(--link);color:#fff}
@@ -396,6 +401,8 @@ body.mood .hist-btn:hover,body.mood .hist-btn.on{opacity:1}
 /* ---------- menus, picker, dialogs ---------- */
 .ctx{transform-origin:top left;position:fixed;z-index:80;background:var(--panel);border-radius:14px;padding:6px;min-width:190px;box-shadow:0 10px 30px rgba(0,0,0,.25);border:2px solid var(--panel-line);animation:pop .12s}
 .ctx .head{padding:4px 12px 6px;font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--faint)}
+.ctx .head.fn{text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-bottom:1px solid var(--line);margin:0 4px 4px;padding:5px 8px 8px}
+.ctx .head.fn small{display:block;font-size:12px;font-weight:400;color:var(--faint);overflow:hidden;text-overflow:ellipsis}
 .ctx button{display:flex;align-items:center;gap:8px;width:100%;border:0;background:none;padding:7px 12px;border-radius:9px;font-size:15px;font-weight:500;text-align:left}
 .ctx button:hover:not(:disabled){background:var(--hover)}
 .ctx button:disabled{opacity:.5;cursor:default}
@@ -424,6 +431,9 @@ body.mood .hist-btn:hover,body.mood .hist-btn.on{opacity:1}
 .set-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
 .set-h h3{margin:0;font-size:24px}
 .set-h .close{border:0;background:var(--chip);width:30px;height:30px;border-radius:50%;font-size:13px}
+.set-h h3{margin-right:auto}
+.set-h .help{border:0;background:var(--chip);width:30px;height:30px;border-radius:50%;font-size:15px;font-weight:700;color:var(--brand);margin-right:8px;transition:transform .3s cubic-bezier(.34,1.56,.64,1),background .2s}
+.set-h .help:hover{transform:rotate(-12deg) scale(1.08);background:color-mix(in srgb,var(--brand) 16%,transparent)}
 .settings section{padding:14px 0;border-bottom:1px solid var(--line)}
 .settings section:last-child{border-bottom:0;padding-bottom:0}
 .settings h4{margin:0 0 8px;font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--faint)}
@@ -559,11 +569,11 @@ input[type=color]::-webkit-color-swatch{border:0;border-radius:6px}
   <div class="drop-new" id="dropNew">+ New board</div>
   <button class="tb-btn" id="newBoard" title="New clipboard (⌘N)"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
   <div class="drag-space"></div>
+  <button class="tb-btn" id="editBtn" title="Design mode — draw, shapes & titles (E)" hidden><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg></button>
   <div class="mode-seg" id="modeSeg" data-pill="mode" role="tablist" aria-label="View mode">
     <button data-mode="clip" role="tab"><svg class="clipi" viewBox="0 0 24 28"><use href="#clip"/></svg>Clipboard</button><button data-mode="mood" role="tab"><svg class="spark" viewBox="0 0 24 24" style="width:12px;height:12px;fill:currentColor"><use href="#spark"/></svg>Mood</button>
   </div>
   <button class="tb-btn" id="lockBtn" title="Lock board — nothing moves, but you can still drag clips out"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path class="shackle" d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></button>
-  <button class="tb-btn" id="editBtn" title="Design mode — draw, shapes & titles (E)" hidden><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg></button>
   <button class="tb-btn" id="settingsBtn" title="Settings (⌘,)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
 </header>
 
@@ -947,11 +957,14 @@ function squiggleSVG(seed) {
 }
 const commentHTML = c => c.comment ? `<div class="comment"><i>Y</i>${esc(c.comment)}</div>` : '';
 
+// Bottom-right label: the extension (.png), or the name you gave the clip inside Recol.
+const extLabel = c => c.label ? `<span class="label named" title="${esc(c.name || '')}">${esc(c.label)}</span>`
+  : `<span class="label">${c.ext === 'folder' ? 'folder' : '.' + esc(c.ext)}</span>`;
 function cardHTML(c, v) {
   switch (c.type) {
-    case 'image': return `<div class="media"><img alt="${esc(c.name)}" draggable="false"></div><span class="label">.${esc(c.ext)}</span>`;
-    case 'video': return `<div class="media"><video muted loop playsinline preload="metadata"></video></div><div class="play"></div><span class="label">.${esc(c.ext)}</span>`;
-    case 'file': return `<div class="inner">${NATIVE && c.blobKey ? '<img class="qlthumb" alt="" draggable="false"><img class="appicon" alt="" draggable="false">' : ''}<div class="fold"></div>${squiggleSVG(c.id.charCodeAt(0) + c.id.charCodeAt(1))}<div class="fname">${esc(c.name)}</div><span class="label">${c.ext === 'folder' ? 'folder' : '.' + esc(c.ext)}</span></div>`;
+    case 'image': return `<div class="media"><img alt="${esc(c.name)}" draggable="false"></div>${extLabel(c)}`;
+    case 'video': return `<div class="media"><video muted loop playsinline preload="metadata"></video></div><div class="play"></div>${extLabel(c)}`;
+    case 'file': return `<div class="inner">${NATIVE && c.blobKey ? '<img class="qlthumb" alt="" draggable="false"><img class="appicon" alt="" draggable="false">' : ''}<div class="fold"></div>${squiggleSVG(c.id.charCodeAt(0) + c.id.charCodeAt(1))}<div class="fname">${esc(c.name)}</div>${extLabel(c)}</div>`;
     case 'link': {
       if (v === 'free') return `<span class="lt">${esc(prettyURL(c.url))}</span><svg class="pc"><use href="#clip"/></svg>`;
       let host = c.url, path = '';
@@ -1066,6 +1079,16 @@ function render(animate) {
   if (filtering() && v === 'free') floatMatches(true);
   requestAnimationFrame(paintSelBar);
   // titles size themselves to their text; remember the size for layout (line up, free spots)
+  // notes that arrived from an AI, script or plugin get sized to their text the first time they're shown
+  if (v === 'free') requestAnimationFrame(() => {
+    let fitted = false;
+    board.clips.forEach(c => {
+      if (!c.fit) return; const n = elFor(c.id)?.querySelector('.ntext'); if (!n) return;
+      n.style.height = 'auto'; c.h = clamp(Math.ceil(n.scrollHeight) + 2, 56, 640); n.style.height = '';
+      elFor(c.id).style.height = c.h + 'px'; delete c.fit; fitted = true;
+    });
+    if (fitted) save();
+  });
   if (v === 'free') requestAnimationFrame(() => (board.shapes || []).forEach(c => {
     if (!c.title) return; const el = elFor(c.id); if (!el) return;
     c.w = Math.max(40, Math.ceil(el.offsetWidth)); c.h = Math.ceil(el.offsetHeight);
@@ -1151,6 +1174,12 @@ function renderTabs() {
   slidePills(nav);
 }
 // Closing a tab only tucks the board away; it stays in Home, where a click opens it again.
+// ⇧⌘] / ⇧⌘[ : step through the open tabs, wrapping around
+function cycleBoard(dir) {
+  const open = state.boards.filter(b => !b.closed || b === board);
+  if (open.length < 2) return;
+  switchBoard(open[(open.indexOf(board) + dir + open.length) % open.length].id);
+}
 function closeTab(id) {
   const b = state.boards.find(x => x.id === id); if (!b) return;
   const open = state.boards.filter(x => !x.closed);
@@ -1174,7 +1203,7 @@ function slidePills(root) {
     pillPos[key] = to;
     const put = p => Object.assign(pill.style, { transform: `translate(${p.x}px,${p.y}px)`, width: p.w + 'px', height: p.h + 'px', opacity: 1 });
     pill.style.transition = 'none'; put(from || to); void pill.offsetWidth; pill.style.transition = '';
-    if (from) requestAnimationFrame(() => put(to));
+    if (from) { void pill.offsetWidth; put(to); }
   }
 }
 
@@ -1234,7 +1263,7 @@ function toggleStickySelection() {
 }
 
 /* ================= fluid drag (pointer-based, with wiggle) ================= */
-let drag = null, suppressClick = false, outbound = null, lockedCarry = null;
+let drag = null, suppressClick = false, outbound = null, lockedCarry = null, histDragOut = false;
 function pickClip(e) {
   let el = e.target.closest?.('.clip');
   if (el && el.classList.contains('title') && board.view === 'free') {
@@ -1842,7 +1871,7 @@ document.addEventListener('contextmenu', e => {
   const allStuck = targets.every(x => x.sticky);
   const colorable = targets.some(x => ['link', 'text', 'file', ...VEC].includes(x.type));
   const html = `
-    ${multi ? `<div class="head">${plural(targets.length, 'clip')} selected</div>` : ''}
+    ${multi ? `<div class="head">${plural(targets.length, 'clip')} selected</div>` : `<div class="head fn" title="${esc(one.name || clipName(one))}">${esc(clipName(one))}${one.label && one.name ? `<small>${esc(one.name)}</small>` : ''}</div>`}
     ${inherited ? `<button disabled>${PIN} Sticky (${state.settings.allSticky ? 'all clips' : 'whole clipboard'})</button>`
                 : `<button data-a="sticky">${PIN} ${allStuck ? 'Remove sticky' : 'Make sticky'}</button>`}
     ${colorable ? '<button data-a="color">Color…</button>' : ''}
@@ -2067,6 +2096,7 @@ document.addEventListener('keydown', e => {
   if (!NATIVE && mod && e.key === '0') { e.preventDefault(); zoomTo(1); return; }
   if (!NATIVE && mod && k === 'g') { e.preventDefault(); e.shiftKey ? ungroupSelection() : groupSelection(); return; }
   if (!NATIVE && mod && e.shiftKey && k === 'h') { e.preventDefault(); toggleHome(); return; }
+  if (!NATIVE && mod && e.shiftKey && (e.key === ']' || e.key === '}' || e.key === '[' || e.key === '{')) { e.preventDefault(); cycleBoard(e.key === ']' || e.key === '}' ? 1 : -1); return; }
   if (!sel.size) return;
   const cs = selClips();
   if ((e.key === 'Delete' || e.key === 'Backspace') && board.locked) { e.preventDefault(); lockedNote(); }
@@ -2421,16 +2451,61 @@ function renderHistory() {
         <span class="ht">${esc(String(label).slice(0, 240))}<span class="hm">${esc(h.app || '')}${h.app ? ' · ' : ''}${ago(h.at)}</span></span><span class="ha">${done ? '✓' : '+ Add'}</span></button>`;
     }).join('') : '<div class="hempty">Copy something in any app and it shows up here — so you can add it later.</div>');
 }
-$('#history').addEventListener('click', async e => {
-  if (e.target.closest('[data-a=clear]')) { await call('historyClear'); histItems = []; renderHistory(); return; }
-  const b = e.target.closest('[data-h]'); if (!b) return;
-  const items2 = await call('historyAdd', { id: b.dataset.h });
+async function addFromHistory(id, at, boardId) {
+  const items2 = await call('historyAdd', { id });
   if (!items2 || !items2.length) return toast('Couldn’t add that — the file may have moved');
   const r = canvas.getBoundingClientRect();
-  recolNative.ingest(items2, { current: true, at: { x: r.left + r.width / 2, y: r.top + r.height / 2.2 } });
-  const h = histItems.find(x => x.id === b.dataset.h); if (h) h.added = true;
+  recolNative.ingest(items2, boardId ? { board: boardId, from: 'History' } : { current: true, at: at || { x: r.left + r.width / 2, y: r.top + r.height / 2.2 } });
+  const h = histItems.find(x => x.id === id); if (h) h.added = true;
   renderHistory();
+}
+$('#history').addEventListener('click', async e => {
+  if (e.target.closest('[data-a=clear]')) { await call('historyClear'); histItems = []; renderHistory(); return; }
+  const b = e.target.closest('[data-h]'); if (!b || histDragged) return;
+  addFromHistory(b.dataset.h);
 });
+// Dragging a history item: drop it on the canvas (lands where you let go), on a tab (goes to that board),
+// or carry it past the window edge — it becomes a normal macOS drag into Finder, Mail, Notes…
+let hdrag = null, histDragged = false;
+const histPayloads = h => h.kind === 'files' ? h.files.map((_, i) => ({ kind: 'hist', id: h.id, i })) : [{ kind: 'hist', id: h.id }];
+$('#history').addEventListener('pointerdown', e => {
+  const b = e.target.closest('[data-h]'); if (!b || e.button !== 0) return;
+  const h = histItems.find(x => x.id === b.dataset.h); if (!h) return;
+  histDragged = false;
+  hdrag = { h, sx: e.clientX, sy: e.clientY, pid: e.pointerId, started: false };
+  const r = b.getBoundingClientRect();
+  if (NATIVE) call('arm', { payloads: histPayloads(h), rect: { x: r.left, y: r.top, w: r.width, h: r.height } });
+});
+addEventListener('pointermove', e => {
+  const d = hdrag; if (!d || e.pointerId !== d.pid) return;
+  if (!d.started) {
+    if (Math.hypot(e.clientX - d.sx, e.clientY - d.sy) < 5) return;
+    d.started = histDragged = true;
+    d.ghost = document.createElement('div'); d.ghost.className = 'hist-ghost';
+    d.ghost.textContent = d.h.kind === 'files' ? '📄 ' + d.h.files.map(f => f.split('/').pop()).join(', ') : d.h.kind === 'image' ? '🖼 Image' : d.h.text.slice(0, 60);
+    document.body.appendChild(d.ghost); document.body.classList.add('dragging');
+  }
+  Object.assign(d.ghost.style, { left: e.clientX + 'px', top: e.clientY + 'px' });
+  const over = document.elementsFromPoint(e.clientX, e.clientY);
+  const tab = over.map(n => n.closest?.('.board-tab')).find(Boolean);
+  document.querySelectorAll('.board-tab').forEach(t => t.classList.toggle('drop', t === tab && t.dataset.id !== board.id));
+  canvas.classList.toggle('hist-over', !tab && !over.some(n => n.closest?.('#history')) && over.includes(canvas));
+});
+function endHistDrag(e, cancel) {
+  const d = hdrag; if (!d) return; hdrag = null;
+  if (NATIVE && !cancel) call('disarm');
+  d.ghost?.remove(); document.body.classList.remove('dragging'); canvas.classList.remove('hist-over');
+  document.querySelectorAll('.board-tab.drop').forEach(t => t.classList.remove('drop'));
+  if (!d.started || cancel) return;
+  setTimeout(() => { histDragged = false; }, 50);
+  const over = document.elementsFromPoint(e.clientX, e.clientY);
+  if (over.some(n => n.closest?.('#history'))) return;
+  const tab = over.map(n => n.closest?.('.board-tab')).find(Boolean);
+  if (tab) addFromHistory(d.h.id, null, tab.dataset.id);
+  else if (over.includes(canvas)) addFromHistory(d.h.id, { x: e.clientX, y: e.clientY });
+}
+addEventListener('pointerup', e => { if (hdrag && e.pointerId === hdrag.pid) endHistDrag(e); });
+addEventListener('pointercancel', e => { if (hdrag && e.pointerId === hdrag.pid) endHistDrag(e, true); });
 document.addEventListener('pointerdown', e => { if (histOpen && !e.target.closest?.('#history,#histBtn')) toggleHistory(false); }, true);
 
 /* ================= snapshots: save a layout, mess it up, snap back ================= */
@@ -2502,6 +2577,34 @@ async function exportMode() {
 }
 
 /* ================= clipboards (tabs) ================= */
+// The guide: a ready-made board that teaches Recol by being a Recol board. Built fresh the first time
+// (and again if you delete it); after that the ? button just opens it.
+const GUIDE_NOTES = [
+  ['#F7E6A1', "# Welcome 👋\nRecol is a clipboard you can see. Drop anything in, arrange it, drag it back out.\n- This board is yours to mess with\n- Reopen it any time: **Settings › ?** or **Help**"],
+  ['#FFFFFF', "# Add clips\n- Drag in files, images, links or text\n- Paste with **⌘V**\n- Double-click the canvas for a note (**⌃⌘N**)\n- In any app, select something and press **⌃⌘C**"],
+  ['#FFFFFF', "# Get them out\n- Drag a clip out of the window into any app\n- Dragged-out clips leave Recol, *sticky* ones stay (**⌘J**)\n- **Space** opens Quick Look, double-click opens"],
+  ['#CDE7F5', "# Move around\n- Two-finger scroll, or hold **Space** and drag\n- Pinch, or **Space** + scroll, to zoom\n- The target button (bottom right) re-centers you"],
+  ['#FFFFFF', "# Organize: the R button\n- Free, grid or list views (**⌘1–3**)\n- Sort by date, name, type, size, color or tag\n- Grid dots or lines, with snapping\n- **Snapshots**: save a layout, revert any time"],
+  ['#D7F0D2', "# Tags & search\n- Right-click › **Tags…** to tag and color clips\n- Filter by tag in the R panel\n- Searching floats matches to the middle\n- **Home** (⇧⌘H) searches every board"],
+  ['#FFFFFF', "# Mood boards\n- Flip **Clipboard → Mood** for a clean canvas\n- The pencil opens design mode: draw, lines, arrows, shapes and titles\n- **⌘G** groups things so they move as one"],
+  ['#F5D5E5', "# Notes\n- Markdown: # title, - bullets, **bold**, *italic*\n- The eye icon opens **focus mode**\n- Pick a font from the note's bar"],
+  ['#FFFFFF', "# Boards\n- Drag a clip onto the top bar for a new board\n- Hover a tab and click **×** to close it (it stays in Home)\n- The lock keeps a layout fixed\n- **⇧⌘] / ⇧⌘[** switch boards"],
+  ['#CDE7F5', "# Handy extras\n- Copy history: the clock, bottom left\n- Export a board as PDF (**⌘P**)\n- Copy as Markdown for any AI (**⌥⌘C**)\n- AI apps & plugins: **Settings › AI / Plugins**"]
+];
+function openGuide() {
+  let b = state.boards.find(x => x.help);
+  if (b) { if (b !== board) switchBoard(b.id); else { b.closed = undefined; renderTabs(); } toast('Here’s the guide — make it messy, it’s yours'); return; }
+  const t = Date.now();
+  b = newBoardObj('How to use Recol');
+  Object.assign(b, { help: true, sort: 'manual' });
+  b.clips = GUIDE_NOTES.map(([color, text], i) => ({ id: uid(), type: 'text', text, color, fit: true, x: 0, y: 0, w: 270, h: noteHeight(text), z: i + 1, added: t + i, order: i }));
+  b.clips.push({ id: uid(), type: 'link', url: 'https://github.com/Milk0drink0/recol', color: DEFAULT_COLOR.link, comment: 'Recol on GitHub', x: 0, y: 0, w: 330, h: 46, z: 40, added: t + 40, order: 40 });
+  b.shapes = [{ id: uid(), type: 'text', title: true, text: 'How to use Recol', font: 'DM Serif', fs: 64, x: START, y: -104, w: 560, h: 66, z: 50, added: t, order: 0 }];
+  state.boards.push(b);
+  switchBoard(b.id);
+  // once the notes have measured themselves, tidy them into rows and fit the view
+  setTimeout(() => { if (board === b) { lineUp(); setTimeout(zoomFit, 560); } }, 120);
+}
 function newBoardObj(name) { return { id: uid(), name, created: Date.now(), clips: [], view: 'free', sort: 'added', dir: 1 }; }
 function switchBoard(id) {
   board = state.boards.find(b => b.id === id) || state.boards[0];
@@ -2568,6 +2671,8 @@ function applyTheme() {
 mq.addEventListener('change', applyTheme);
 async function applySettings() {
   applyTheme();
+  $('#histBtn').hidden = !state.settings.copyHistory;
+  if (!state.settings.copyHistory && histOpen) toggleHistory(false);
   if (!NATIVE) return;
   const s = state.settings;
   nativeInfo = (await call('settings', { settings: { ...s, appearance: s.theme === 'custom' ? (resolvedDark ? 'dark' : 'light') : s.theme } })) || {};
@@ -2604,7 +2709,7 @@ function openSettings() {
   const LINK_OPTS = [[5, 'bigger than 5 MB'], [10, 'bigger than 10 MB'], [25, 'bigger than 25 MB'], [50, 'bigger than 50 MB'], [0, 'always — never copy'], [-1, 'never — always copy']];
   const m = document.createElement('div'); m.className = 'modal set';
   m.innerHTML = `<div class="dlg settings" role="dialog" aria-label="Settings">
-    <div class="set-h"><h3>Settings</h3><button class="close" data-x aria-label="Close">✕</button></div>
+    <div class="set-h"><h3>Settings</h3><button class="help" data-a="help" title="How to use Recol — opens a guide board">?</button><button class="close" data-x aria-label="Close">✕</button></div>
     <section><h4>Appearance</h4>
       <div class="seg3 seg4" data-pill="theme">${['system', 'light', 'dark', 'custom'].map(t => `<button data-th="${t}" class="${s.theme === t ? 'on' : ''}">${t[0].toUpperCase() + t.slice(1)}</button>`).join('')}</div>
       <div class="custom-theme" ${s.theme === 'custom' ? '' : 'hidden'}>
@@ -2629,8 +2734,8 @@ function openSettings() {
       ${row('hotkey', 'Quick save shortcut', 'Save to Recol from any app, without opening it.')}
       <div class="sel-row qkey${s.hotkey ? '' : ' off'}"><span>Shortcut<small>Click, then press the keys you want. Include ⌘ and one of ⌃ ⌥ ⇧.</small></span><button class="btn kbd-rec" data-a="rec">${fmtShortcut(s.shortcut)}</button></div>
       <label class="sel-row qmode${s.hotkey ? '' : ' off'}"><span>How it works<small>${s.quickMode === 'press' ? 'Recol presses ⌘C for you, so your selection also lands on your clipboard. Works everywhere, needs Accessibility.' : 'macOS hands your selection straight to Recol. Your clipboard isn’t touched. Works in most apps when something is selected.'}</small></span><select data-k="quickMode">
-        <option value="services" ${s.quickMode !== 'press' ? 'selected' : ''}>Save selection (no permission)</option>
-        <option value="press" ${s.quickMode === 'press' ? 'selected' : ''}>Copy &amp; save (needs Accessibility)</option>
+        <option value="services" ${s.quickMode !== 'press' ? 'selected' : ''}>Save selection</option>
+        <option value="press" ${s.quickMode === 'press' ? 'selected' : ''}>Copy &amp; save</option>
       </select></label>
       <div class="perm"></div>
       <label class="sel-row"><span>Save to</span><select data-k="quickTarget">
@@ -2688,6 +2793,7 @@ function openSettings() {
     }
     if (e.target.closest('[data-a=grant]')) { nativeInfo.accessibility = await call('requestAccessibility'); paintPerm(); }
     if (e.target.closest('[data-a=share]')) { close(); share(); }
+    if (e.target.closest('[data-a=help]')) { close(); openGuide(); }
     if (e.target.closest('[data-a=md]')) copyMarkdown();
     if (e.target.closest('[data-a=mcp]')) copyText(mcpConfig(), 'Copied — paste it into your AI app’s MCP config');
     if (e.target.closest('[data-a=aidocs]')) call('openDoc', { name: 'AI.md' });
@@ -3054,7 +3160,7 @@ function pluginAPI(p) {
     get: id => { const f = findAny(id); return f ? snap0(f.c) : null; },
     markdown: ref => boardMarkdown(need(ref)),
     // ── change ──
-    addNote: (md, o = {}) => addClip({ type: 'text', text: String(md), color: o.color || DEFAULT_COLOR.text }, { w: o.w || 260, h: o.h || noteHeight(md) }, o.at, need(o.board)).id,
+    addNote: (md, o = {}) => addClip({ type: 'text', text: String(md), color: o.color || DEFAULT_COLOR.text, fit: !o.h }, { w: o.w || 260, h: o.h || noteHeight(md) }, o.at, need(o.board)).id,
     addText: async (t, o = {}) => (await addText(String(t), o.at, need(o.board)))?.id,
     addLink: async (url, o = {}) => (await addText(String(url), o.at, need(o.board)))?.id,
     update(id, patch = {}) {
@@ -3135,11 +3241,13 @@ const commands = {
   newNote: () => newNote(), zoomIn: () => zoomBy(1.25), zoomOut: () => zoomBy(0.8), zoomReset: () => zoomTo(1), zoomFit: () => zoomFit(),
   grid: () => { if (board.view !== 'free') setView('free'); board.grid = { '': 'dots', dots: 'lines', lines: undefined }[board.grid || '']; save(); applyCam(); if (orgOpen) renderOrganize(); toast(board.grid ? `Grid: ${board.grid}` : 'Grid off'); },
   snap: () => { board.snap = !board.snap || undefined; if (board.snap && !board.grid) board.grid = 'dots'; save(); applyCam(); if (orgOpen) renderOrganize(); toast(board.snap ? 'Snapping to grid' : 'Snapping off'); },
-  copyMarkdown: () => copyMarkdown()
+  copyMarkdown: () => copyMarkdown(),
+  nextBoard: () => cycleBoard(1), prevBoard: () => cycleBoard(-1), help: () => openGuide()
 };
 window.recolNative = {
   // The held clip(s) crossed the window edge and became a real macOS drag.
   dragOut() {
+    if (hdrag) { endHistDrag({}, true); histDragOut = true; return; }   // a history item left the window
     const d = drag;
     if (!d) { if (lockedCarry) { outbound = lockedCarry; lockedCarry = null; } return; }
     outbound = d.carried;
@@ -3148,6 +3256,7 @@ window.recolNative = {
   },
   // The macOS drag finished. Dropped somewhere → non-sticky clips leave Recol.
   dragEnded(ok) {
+    if (histDragOut) { histDragOut = false; if (ok) toast('Dropped from your copy history'); return; }
     const out = outbound || []; outbound = null;
     const leaving = ok ? out.filter(c => !isSticky(c)) : [];
     surface.querySelectorAll('.clip.out').forEach(n => n.classList.remove('out'));
@@ -3170,7 +3279,7 @@ window.recolNative = {
     (async () => {
       for (const [i, it] of items.entries()) {
         if (it.file) await addStored(it.file, i === 0 ? at : null, b);
-        else if (it.note) addClip({ type: 'text', text: String(it.note), color: DEFAULT_COLOR.text }, { w: 260, h: noteHeight(it.note) }, i === 0 ? at : null, b);
+        else if (it.note) addClip({ type: 'text', text: String(it.note), color: DEFAULT_COLOR.text, fit: true }, { w: 260, h: noteHeight(it.note) }, i === 0 ? at : null, b);
         else if (it.text) {
           const t = it.text.trim();
           if (!opts.current && b.clips.some(c => (c.text === t || c.url === t) && Date.now() - (c.added || 0) < 60000)) { toast('Already in Recol — saved just now'); continue; }

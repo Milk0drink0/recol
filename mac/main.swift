@@ -687,6 +687,30 @@ final class App: NSObject, NSApplicationDelegate, NSWindowDelegate, WKScriptMess
     }
     func writer(for a: [String: Any]) -> (NSPasteboardWriting, NSImage)? {
         switch a["kind"] as? String {
+        case "hist":
+            guard let id = a["id"] as? String, let h = history.first(where: { $0.id == id }) else { return nil }
+            switch h.kind {
+            case "files":
+                let i = (a["i"] as? NSNumber)?.intValue ?? 0
+                guard let files = h.files, i < files.count, fm.fileExists(atPath: files[i]) else { return nil }
+                return (URL(fileURLWithPath: files[i]) as NSURL, NSWorkspace.shared.icon(forFile: files[i]))
+            case "image":
+                // give the dragged file a friendly name instead of the history id
+                guard let img = h.image else { return nil }
+                let src = historyDir.appendingPathComponent(img)
+                let f = DateFormatter(); f.dateFormat = "yyyy-MM-dd 'at' HH.mm.ss"
+                let dir = fm.temporaryDirectory.appendingPathComponent("Recol History/\(newKey())", isDirectory: true)
+                let dst = dir.appendingPathComponent("Copied image \(f.string(from: Date(timeIntervalSince1970: h.at / 1000))).png")
+                try? fm.createDirectory(at: dir, withIntermediateDirectories: true)
+                guard (try? fm.copyItem(at: src, to: dst)) != nil else { return nil }
+                return (dst as NSURL, NSImage(contentsOf: dst) ?? NSWorkspace.shared.icon(for: .png))
+            default:
+                let t = h.text ?? ""
+                let item = NSPasteboardItem()
+                item.setString(t, forType: .string)
+                if let u = URL(string: t.trimmingCharacters(in: .whitespacesAndNewlines)), u.scheme?.hasPrefix("http") == true { item.setString(u.absoluteString, forType: .URL) }
+                return (item, NSWorkspace.shared.icon(for: .plainText))
+            }
         case "note":
             let item = NSPasteboardItem()
             item.setString(a["text"] as? String ?? "", forType: .string)
@@ -1276,9 +1300,12 @@ final class App: NSObject, NSApplicationDelegate, NSWindowDelegate, WKScriptMess
         let w = menu("Window", [
             item("Minimize", #selector(NSWindow.performMiniaturize(_:)), "m"),
             item("Zoom", #selector(NSWindow.performZoom(_:))), .separator(),
+            cmd("Next Clipboard", "nextBoard", "]", [.command, .shift]), cmd("Previous Clipboard", "prevBoard", "[", [.command, .shift]), .separator(),
             mine("Recol", #selector(showWindow))
         ])
+        let help = menu("Help", [cmd("How to Use Recol", "help", "?")])
         NSApp.mainMenu = main
+        NSApp.helpMenu = help
         NSApp.windowsMenu = w
     }
 }
