@@ -1,0 +1,7 @@
+{
+  "name": "Daily note",
+  "description": "Adds a note headed with today’s date.",
+  "version": "1.0",
+  "author": "Recol",
+  "main": "main.js"
+}

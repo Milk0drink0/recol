@@ -1,0 +1,9 @@
+# build output
+build/
+
+# macOS / editor clutter
+.DS_Store
+*.swp
+
+# local Claude Code settings
+.claude/

@@ -1,0 +1,7 @@
+{
+  "name": "Word count",
+  "description": "Counts the words in the notes you’ve selected.",
+  "version": "1.0",
+  "author": "Recol",
+  "main": "main.js"
+}

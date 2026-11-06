@@ -1,0 +1,7 @@
+{
+  "name": "Group by kind",
+  "description": "Lays clips out in columns: images, videos, files, links, notes.",
+  "version": "1.0",
+  "author": "Recol",
+  "main": "main.js"
+}
